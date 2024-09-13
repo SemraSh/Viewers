@@ -10,13 +10,22 @@ class PlanarFreehandROIWithAxisTool extends PlanarFreehandROITool {
   renderAnnotation = (enabledElement, svgDrawingHelper) => {
     const result = super.renderAnnotation(enabledElement, svgDrawingHelper);
 
-    const { viewport } = enabledElement.viewport;
+    const { viewport } = enabledElement;
+    if (!viewport) {
+      console.warn('Viewport is undefined in renderAnnotation');
+      return result;
+    }
+
     const { element } = viewport;
+    if (!element) {
+      console.warn('Element is undefined in renderAnnotation');
+      return result;
+    }
 
     const annotations = annotation.state.getAnnotations(this.getToolName(), element);
 
     if (!annotations?.length) {
-      return;
+      return result;
     }
 
     console.log('annotations', annotations);
