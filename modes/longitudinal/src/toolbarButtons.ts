@@ -92,8 +92,8 @@ const toolbarButtons: Button[] = [
         createButton({
           id: 'PlanarFreehandROIWithAxis',
           icon: 'icon-tool-freehand-roi',
-          label: 'Freehand ROI',
-          tooltip: 'Freehand ROI',
+          label: 'Freehand ROI with axis',
+          tooltip: 'Freehand ROI with axis',
           commands: setToolActiveToolbar,
           evaluate: 'evaluate.cornerstoneTool',
         }),
