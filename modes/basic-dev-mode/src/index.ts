@@ -91,18 +91,24 @@ function modeFactory({ modeConfiguration }) {
 
       toolGroupService.createToolGroupAndAddTools('default', tools);
 
-      toolbarService.addButtons(
-        toolbarButtons.filter(button => servicesManager.services.rbacService.hasAccess(button.id))
-      );
-      toolbarService.createButtonSection(
-        'primary',
-        ['MeasurementTools', 'Zoom', 'WindowLevel', 'Pan', 'Layout', 'MoreTools'].filter(button =>
-          servicesManager.services.rbacService.hasAccess(button)
-        )
-      );
+      toolbarService.addButtons(toolbarButtons);
+      toolbarService.createButtonSection('primary', [
+        'MeasurementTools',
+        'Zoom',
+        'WindowLevel',
+        'Pan',
+        'Layout',
+        'MoreTools',
+      ]);
     },
     onModeExit: ({ servicesManager }: withAppTypes) => {
-      const { toolGroupService, uiDialogService, uiModalService } = servicesManager.services;
+      const {
+        toolGroupService,
+        measurementService,
+        toolbarService,
+        uiDialogService,
+        uiModalService,
+      } = servicesManager.services;
       uiDialogService.dismissAll();
       uiModalService.hide();
       toolGroupService.destroy();
@@ -111,15 +117,7 @@ function modeFactory({ modeConfiguration }) {
       study: [],
       series: [],
     },
-    isValidMode: ({ modalities, servicesManager }: withAppTypes) => {
-      const { rbacService } = servicesManager.services;
-      if (!rbacService.canAccessMode(id)) {
-        return {
-          valid: false,
-          description: 'You do not have permission to access this mode.',
-          id: id,
-        };
-      }
+    isValidMode: ({ modalities }) => {
       const modalities_list = modalities.split('\\');
 
       // Slide Microscopy modality not supported by basic mode yet
@@ -135,34 +133,25 @@ function modeFactory({ modeConfiguration }) {
           //defaultViewerRouteInit
         },*/
         layoutTemplate: ({ location, servicesManager }) => {
-          const { rbacService } = servicesManager.services;
           return {
             id: ohif.layout,
             props: {
               // TODO: Should be optional, or required to pass empty array for slots?
-              leftPanels: rbacService.hasAccess('ViewSeries') ? [ohif.thumbnailList] : [],
-              rightPanels: rbacService.hasAccess('Measurements') ? [ohif.measurements] : [],
+              leftPanels: [ohif.thumbnailList],
+              rightPanels: [ohif.measurements],
               viewports: [
                 {
                   namespace: cs3d.viewport,
                   displaySetsToDisplay: [ohif.sopClassHandler],
                 },
-                ...(rbacService.hasAccess('ViewDICOMVideo')
-                  ? [
-                      {
-                        namespace: dicomvideo.viewport,
-                        displaySetsToDisplay: [dicomvideo.sopClassHandler],
-                      },
-                    ]
-                  : []),
-                ...(rbacService.hasAccess('ViewDICOMPDF')
-                  ? [
-                      {
-                        namespace: dicompdf.viewport,
-                        displaySetsToDisplay: [dicompdf.sopClassHandler],
-                      },
-                    ]
-                  : []),
+                {
+                  namespace: dicomvideo.viewport,
+                  displaySetsToDisplay: [dicomvideo.sopClassHandler],
+                },
+                {
+                  namespace: dicompdf.viewport,
+                  displaySetsToDisplay: [dicompdf.sopClassHandler],
+                },
               ],
             },
           };

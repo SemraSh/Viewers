@@ -80,13 +80,8 @@ function modeFactory({ modeConfiguration }) {
      * Lifecycle hooks
      */
     onModeEnter: function ({ servicesManager, extensionManager, commandsManager }: withAppTypes) {
-      const {
-        measurementService,
-        toolbarService,
-        toolGroupService,
-        customizationService,
-        rbacService,
-      } = servicesManager.services;
+      const { measurementService, toolbarService, toolGroupService, customizationService } =
+        servicesManager.services;
 
       measurementService.clearMeasurements();
 
@@ -107,26 +102,18 @@ function modeFactory({ modeConfiguration }) {
       // Init Default and SR ToolGroups
       initToolGroups(extensionManager, toolGroupService, commandsManager, this.labelConfig);
 
-      toolbarService.addButtons(
-        [...toolbarButtons, ...moreTools].filter(button => {
-          return rbacService.hasAccess(button.id);
-        })
-      );
-
-      toolbarService.createButtonSection(
-        'primary',
-        [
-          'MeasurementTools',
-          'Zoom',
-          'Pan',
-          'TrackballRotate',
-          'WindowLevel',
-          'Capture',
-          'Layout',
-          'Crosshairs',
-          'MoreTools',
-        ].filter(tool => rbacService.hasAccess(tool))
-      );
+      toolbarService.addButtons([...toolbarButtons, ...moreTools]);
+      toolbarService.createButtonSection('primary', [
+        'MeasurementTools',
+        'Zoom',
+        'Pan',
+        'TrackballRotate',
+        'WindowLevel',
+        'Capture',
+        'Layout',
+        'Crosshairs',
+        'MoreTools',
+      ]);
 
       customizationService.addModeCustomizations([
         {
@@ -182,15 +169,7 @@ function modeFactory({ modeConfiguration }) {
       series: [],
     },
 
-    isValidMode: function ({ modalities, servicesManager }: withAppTypes) {
-      const { rbacService } = servicesManager.services;
-      if (!rbacService.canAccessMode(id)) {
-        return {
-          valid: false,
-          description: 'You do not have permission to access this mode.',
-        };
-      }
-
+    isValidMode: function ({ modalities }) {
       const modalities_list = modalities.split('\\');
 
       // Exclude non-image modalities
@@ -207,15 +186,12 @@ function modeFactory({ modeConfiguration }) {
         /*init: ({ servicesManager, extensionManager }) => {
           //defaultViewerRouteInit
         },*/
-        layoutTemplate: ({ servicesManager }) => {
-          const { rbacService } = servicesManager.services;
+        layoutTemplate: () => {
           return {
             id: ohif.layout,
             props: {
-              leftPanels: rbacService.hasAccess('ViewSeries') ? [tracked.thumbnailList] : [],
-              rightPanels: rbacService.hasAccess('Measurements')
-                ? [dicomSeg.panel, tracked.measurements]
-                : [],
+              leftPanels: [tracked.thumbnailList],
+              rightPanels: [dicomSeg.panel, tracked.measurements],
               rightPanelClosed: true,
               viewports: [
                 {

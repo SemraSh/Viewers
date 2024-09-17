@@ -49,6 +49,7 @@ export default class ServicesManager {
         extensionManager: this._extensionManager,
         commandsManager: this._commandsManager,
         servicesManager: this,
+        extensionManager: this._extensionManager,
       });
       if (service.altName) {
         // TODO - remove this registration

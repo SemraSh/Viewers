@@ -50,15 +50,8 @@ function modeFactory({ modeConfiguration }) {
     onModeEnter: ({ servicesManager, extensionManager, commandsManager }: withAppTypes) => {
       const { toolbarService } = servicesManager.services;
 
-      toolbarService.addButtons(
-        toolbarButtons.filter(button => servicesManager.services.rbacService.hasAccess(button.id))
-      );
-      toolbarService.createButtonSection(
-        'primary',
-        ['MeasurementTools', 'dragPan', 'TagBrowser'].filter(button =>
-          servicesManager.services.rbacService.hasAccess(button)
-        )
-      );
+      toolbarService.addButtons(toolbarButtons);
+      toolbarService.createButtonSection('primary', ['MeasurementTools', 'dragPan', 'TagBrowser']);
     },
 
     onModeExit: ({ servicesManager }: withAppTypes) => {
@@ -74,14 +67,7 @@ function modeFactory({ modeConfiguration }) {
       series: [],
     },
 
-    isValidMode: ({ modalities, servicesManager }: withAppTypes) => {
-      const { rbacService } = servicesManager.services;
-      if (!rbacService.canAccessMode(id)) {
-        return {
-          valid: false,
-          description: 'You do not have permission to access this mode.',
-        };
-      }
+    isValidMode: ({ modalities }) => {
       const modalities_list = modalities.split('\\');
 
       return {

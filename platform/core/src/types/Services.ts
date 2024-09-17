@@ -11,7 +11,6 @@ import {
   WorkflowStepsService,
   CineService,
   UserAuthenticationService,
-  RBACService,
   PanelService,
   UIDialogService,
   UIViewportDialogService,
@@ -37,7 +36,6 @@ interface Services {
   uiDialogService?: UIDialogService;
   uiViewportDialogService?: UIViewportDialogService;
   panelService?: PanelService;
-  rbacService?: RBACService;
 }
 
 export default Services;

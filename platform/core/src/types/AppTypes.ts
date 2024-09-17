@@ -15,7 +15,6 @@ import PanelServiceType from '../services/PanelService';
 import UIDialogServiceType from '../services/UIDialogService';
 import UIViewportDialogServiceType from '../services/UIViewportDialogService';
 import StudyPrefetcherServiceType from '../services/StudyPrefetcherService';
-import RBACServiceType from '../services/RBACService';
 
 import ServicesManagerType from '../services/ServicesManager';
 import CommandsManagerType from '../classes/CommandsManager';
@@ -68,7 +67,6 @@ declare global {
       uiViewportDialogService?: UIViewportDialogServiceType;
       panelService?: PanelServiceType;
       studyPrefetcherService?: StudyPrefetcherServiceType;
-      rbacService?: RBACServiceType;
     }
     export interface Config {
       routerBasename?: string;
